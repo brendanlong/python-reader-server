@@ -15,14 +15,14 @@ class Users(AbstractUsers):
         return self.conn.users.get(id)
 
     async def by_email(self, email: str) -> Optional[User]:
-        for user in self.db.conn.values():
+        for user in self.conn.users.values():
             if user.email == email.lower():
                 return user
         return None
 
     async def create(self, email: str, password: str) -> User:
         user = User(id=str(uuid4()), email=email.lower())
-        assert user.id not in self.db.users
+        assert user.id not in self.conn.users
         self.conn.users[user.id] = user
         return user
 

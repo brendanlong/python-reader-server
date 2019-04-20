@@ -34,3 +34,20 @@ class Query(graphene.ObjectType):
 
     async def resolve_users(self, info: ResolveInfo) -> Iterable[User]:
         return await info.context.db.users.all()
+
+
+class CreateUser(graphene.Mutation):
+    class Arguments:
+        email = graphene.NonNull(graphene.String)
+        password = graphene.NonNull(graphene.String)
+
+    user = graphene.Field(lambda: User)
+
+    async def mutate(self, info: ResolveInfo, email: str,
+                     password: str) -> "CreateUser":
+        user = await info.context.db.users.create(email, password)
+        return CreateUser(user)
+
+
+class Mutations(graphene.ObjectType):
+    create_user = CreateUser.Field()
