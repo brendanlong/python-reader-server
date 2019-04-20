@@ -1,21 +1,28 @@
+#!/usr/bin/env python3
 import asyncio
 
 import graphene
 from graphql.execution.executors.asyncio import AsyncioExecutor
 
-import reader_server.query
+from reader_server.backends.memory import Db
+from reader_server.graphql.context import Context
+from reader_server.graphql.query import Query
 
 
 async def main() -> None:
     loop = asyncio.get_event_loop()
     executor = AsyncioExecutor(loop=loop)
-    schema = graphene.Schema(query=reader_server.query.Query)
+    schema = graphene.Schema(query=Query)
     print(schema)
     result = await schema.execute(
-        "{ users { id } }",
+        "{ users { edges { node { id } } } }",
+        context=Context(Db()),
         executor=executor,
         return_promise=True)
-    print(result.data)
+    if result.errors:
+        print(result.errors)
+    else:
+        print(result.data)
 
 
 if __name__ == "__main__":
