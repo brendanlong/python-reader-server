@@ -13,7 +13,8 @@ class UserObj(graphene.ObjectType):
         name = "User"
         interfaces = (relay.Node,)
 
-    email = graphene.Field(Email, required=True)
+    id: str
+    email: str = graphene.Field(Email, required=True)
 
     @classmethod
     async def get_node(cls, info: ResolveInfo, id: str) -> User:
@@ -35,7 +36,7 @@ class UserConnection(relay.Connection):
 class Query(graphene.ObjectType):
     users = relay.ConnectionField(UserConnection)
 
-    user = graphene.Field(UserObj)
+    user: UserObj = graphene.Field(UserObj)
 
     async def resolve_user(self, info: ResolveInfo) -> Optional[User]:
         return info.context.user
@@ -56,7 +57,7 @@ class CreateUser(graphene.Mutation):
         email = graphene.NonNull(Email)
         password = graphene.NonNull(graphene.String)
 
-    user = graphene.Field(UserObj, required=True)
+    user: UserObj = graphene.Field(UserObj, required=True)
 
     async def mutate(self, info: ResolveInfo, email: str,
                      password: str) -> "CreateUser":

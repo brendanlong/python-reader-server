@@ -1,3 +1,4 @@
-from . import user
+from . import feed, user
 
+Feed = feed.Feed
 User = user.User

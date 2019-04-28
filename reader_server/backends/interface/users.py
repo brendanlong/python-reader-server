@@ -6,10 +6,10 @@ from reader_server.types import User
 
 class AbstractUsers(ABC):
     @abstractmethod
-    async def by_id(self, id: str) -> Optional[str]: pass
+    async def by_id(self, id: str) -> Optional[User]: pass
 
     @abstractmethod
-    async def by_email(self, email: str) -> Optional[str]: pass
+    async def by_email(self, email: str) -> Optional[User]: pass
 
     @abstractmethod
     async def create(self, email: str, password: str) -> User: pass

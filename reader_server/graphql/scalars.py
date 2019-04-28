@@ -16,7 +16,6 @@ class Email(Scalar):
     @staticmethod
     def parse_literal(node: graphene.Node) -> Optional[str]:
         if isinstance(node, ast.StringValue):
-            print(node.value)
             return validate_email(node.value)["email"]
         else:
             return None

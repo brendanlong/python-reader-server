@@ -21,6 +21,9 @@ class Users(AbstractUsers):
         return None
 
     async def create(self, email: str, password: str) -> User:
+        existing_user = await self.by_email(email)
+        if existing_user is not None:
+            raise ValueError(f"User {email} already exists")
         user = User(id=str(uuid4()), email=email.lower())
         assert user.id not in self.conn.users
         self.conn.users[user.id] = user
