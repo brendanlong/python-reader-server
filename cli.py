@@ -36,12 +36,26 @@ async def main() -> None:
         print(result.errors)
     else:
         print(json.dumps(result.data, indent=2))
+        user_id = result.data["createUser"]["user"]["id"]
 
     print("Getting users")
     result = await schema.execute(
         """
         { users { edges { node { email } } } }
         """,
+        context=context,
+        executor=executor,
+        return_promise=True)
+    if result.errors:
+        print(result.errors)
+    else:
+        print(json.dumps(result.data, indent=2))
+
+    print("Getting user by ID")
+    result = await schema.execute(
+        """
+        { node(id:"%s"){ id } }
+        """ % user_id,
         context=context,
         executor=executor,
         return_promise=True)

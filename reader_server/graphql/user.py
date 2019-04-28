@@ -15,7 +15,8 @@ class UserObj(graphene.ObjectType):
 
     @classmethod
     async def get_node(cls, info: ResolveInfo, id: str) -> User:
-        return await info.context.db.users.by_id(id)
+        user = await info.context.db.users.by_id(id)
+        return cls(user.id, user.email)
 
     def resolve_id(user: User, info: ResolveInfo) -> str:
         return user.id
@@ -30,8 +31,6 @@ class UserConnection(relay.Connection):
 
 
 class Query(graphene.ObjectType):
-    node = graphene.relay.Node.Field()
-
     users = relay.ConnectionField(UserConnection)
 
     async def resolve_users(self, info: ResolveInfo) -> Iterable[User]:
