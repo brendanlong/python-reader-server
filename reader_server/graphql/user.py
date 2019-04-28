@@ -3,28 +3,30 @@ from typing import Iterable
 import graphene
 from graphene import relay
 
-from reader_server import types
 from .context import ResolveInfo
+from reader_server.types import User
 
 
-class User(graphene.ObjectType):
+class UserObj(graphene.ObjectType):
     class Meta:
         interfaces = (relay.Node,)
 
     email = graphene.NonNull(graphene.String)
 
     @classmethod
-    def from_db(cls, db_user: types.User) -> "User":
-        return cls(id=db_user.id, email=db_user.email)
-
-    @classmethod
-    async def get_node(cls, info: ResolveInfo, id: str) -> "User":
+    async def get_node(cls, info: ResolveInfo, id: str) -> User:
         return await info.context.db.users.by_id(id)
+
+    def resolve_id(user: User, info: ResolveInfo) -> str:
+        return user.id
+
+    def resolve_email(user: User, info: ResolveInfo) -> str:
+        return user.email
 
 
 class UserConnection(relay.Connection):
     class Meta:
-        node = User
+        node = UserObj
 
 
 class Query(graphene.ObjectType):
@@ -41,7 +43,7 @@ class CreateUser(graphene.Mutation):
         email = graphene.NonNull(graphene.String)
         password = graphene.NonNull(graphene.String)
 
-    user = graphene.Field(lambda: User)
+    user = graphene.Field(lambda: UserObj)
 
     async def mutate(self, info: ResolveInfo, email: str,
                      password: str) -> "CreateUser":
