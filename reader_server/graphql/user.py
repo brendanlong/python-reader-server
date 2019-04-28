@@ -10,6 +10,7 @@ from .scalars import Email
 
 class UserObj(graphene.ObjectType):
     class Meta:
+        name = "User"
         interfaces = (relay.Node,)
 
     email = graphene.Field(Email, required=True)
@@ -34,6 +35,11 @@ class UserConnection(relay.Connection):
 class Query(graphene.ObjectType):
     users = relay.ConnectionField(UserConnection)
 
+    user = graphene.Field(UserObj)
+
+    async def resolve_user(self, info: ResolveInfo) -> Optional[User]:
+        return info.context.user
+
     async def resolve_users(
         self,
         info: ResolveInfo,
@@ -50,7 +56,7 @@ class CreateUser(graphene.Mutation):
         email = graphene.NonNull(Email)
         password = graphene.NonNull(graphene.String)
 
-    user = graphene.Field(lambda: UserObj)
+    user = graphene.Field(UserObj, required=True)
 
     async def mutate(self, info: ResolveInfo, email: str,
                      password: str) -> "CreateUser":

@@ -66,6 +66,20 @@ async def main() -> None:
     else:
         print(json.dumps(result.data, indent=2))
 
+    print("Get current user")
+    context = Context(context.db, (await context.db.users.all())[0])
+    result = await schema.execute(
+        """
+        { user{ id } }
+        """,
+        context=context,
+        executor=executor,
+        return_promise=True)
+    if result.errors:
+        print(result.errors)
+    else:
+        print(json.dumps(result.data, indent=2))
+
 
 if __name__ == "__main__":
     asyncio.run(main())
