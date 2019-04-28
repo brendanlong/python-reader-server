@@ -11,6 +11,7 @@ pytest = "*"
 
 [packages]
 graphene = "*"
+email-validator = "*"
 
 [requires]
 python_version = "3.7"

@@ -5,13 +5,14 @@ from graphene import relay
 
 from .context import ResolveInfo
 from reader_server.types import User
+from .scalars import Email
 
 
 class UserObj(graphene.ObjectType):
     class Meta:
         interfaces = (relay.Node,)
 
-    email = graphene.NonNull(graphene.String)
+    email = graphene.Field(Email, required=True)
 
     @classmethod
     async def get_node(cls, info: ResolveInfo, id: str) -> User:
@@ -46,7 +47,7 @@ class Query(graphene.ObjectType):
 
 class CreateUser(graphene.Mutation):
     class Arguments:
-        email = graphene.NonNull(graphene.String)
+        email = graphene.NonNull(Email)
         password = graphene.NonNull(graphene.String)
 
     user = graphene.Field(lambda: UserObj)

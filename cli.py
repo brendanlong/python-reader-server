@@ -22,7 +22,7 @@ async def main() -> None:
     for email in ["brendan@example.com", "test@example.com"]:
         result = await schema.execute(
             """
-            mutation createUser($email: String!) {
+            mutation createUser($email: Email!) {
                 createUser(email: $email, password:"test") {
                     user {
                         id, email
