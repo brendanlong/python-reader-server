@@ -18,30 +18,32 @@ async def main() -> None:
     context = Context(Db())
     print(schema)
 
-    print("Creating user")
-    result = await schema.execute(
-        """
-        mutation createUser {
-            createUser(email:"brendan@example.com", password:"test") {
-                user {
-                    id, email
+    print("Creating users")
+    for email in ["brendan@example.com", "test@example.com"]:
+        result = await schema.execute(
+            """
+            mutation createUser($email: String!) {
+                createUser(email: $email, password:"test") {
+                    user {
+                        id, email
+                    }
                 }
             }
-        }
-        """,
-        context=context,
-        executor=executor,
-        return_promise=True)
-    if result.errors:
-        print(result.errors)
-    else:
-        print(json.dumps(result.data, indent=2))
-        user_id = result.data["createUser"]["user"]["id"]
+            """,
+            context=context,
+            executor=executor,
+            variables={"email": email},
+            return_promise=True)
+        if result.errors:
+            print(result.errors)
+        else:
+            print(json.dumps(result.data, indent=2))
+            user_id = result.data["createUser"]["user"]["id"]
 
     print("Getting users")
     result = await schema.execute(
         """
-        { users { edges { node { email } } } }
+        { users(first: 1) { edges { cursor, node { email } }, pageInfo { hasNextPage } } }
         """,
         context=context,
         executor=executor,

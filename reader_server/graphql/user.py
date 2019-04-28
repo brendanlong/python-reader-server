@@ -1,4 +1,4 @@
-from typing import Iterable
+from typing import Iterable, Optional
 
 import graphene
 from graphene import relay
@@ -33,7 +33,14 @@ class UserConnection(relay.Connection):
 class Query(graphene.ObjectType):
     users = relay.ConnectionField(UserConnection)
 
-    async def resolve_users(self, info: ResolveInfo) -> Iterable[User]:
+    async def resolve_users(
+        self,
+        info: ResolveInfo,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        first: Optional[int] = None,
+        last: Optional[int] = None
+    ) -> Iterable[User]:
         return await info.context.db.users.all()
 
 
@@ -47,7 +54,7 @@ class CreateUser(graphene.Mutation):
     async def mutate(self, info: ResolveInfo, email: str,
                      password: str) -> "CreateUser":
         user = await info.context.db.users.create(email, password)
-        return CreateUser(user)
+        return CreateUser(UserObj(user.id, user.email))
 
 
 class Mutations(graphene.ObjectType):
