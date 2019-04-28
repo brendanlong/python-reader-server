@@ -1,7 +1,7 @@
 import graphene
 
-from . import user
+from . import subscription, user
 
 
-class Mutations(user.Mutations, graphene.ObjectType):
+class Mutations(subscription.Mutations, user.Mutations, graphene.ObjectType):
     pass

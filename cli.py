@@ -80,6 +80,30 @@ async def main() -> None:
     else:
         print(json.dumps(result.data, indent=2))
 
+    print("Creating subscriptions")
+    for url in ["https://example.com/rss",
+                "https://www.brendanlong.com/feeds/all.atom.xml"]:
+        result = await schema.execute(
+            """
+            mutation createSubscription($url: String!) {
+                createSubscription(url: $url) {
+                    subscription {
+                        id,
+                        user { email },
+                        feed { id }
+                    }
+                }
+            }
+            """,
+            context=context,
+            executor=executor,
+            variables={"url": url},
+            return_promise=True)
+        if result.errors:
+            print(result.errors)
+        else:
+            print(json.dumps(result.data, indent=2))
+
 
 if __name__ == "__main__":
     asyncio.run(main())

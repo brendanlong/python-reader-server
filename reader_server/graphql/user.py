@@ -62,7 +62,7 @@ class CreateUser(graphene.Mutation):
     async def mutate(self, info: ResolveInfo, email: str,
                      password: str) -> "CreateUser":
         user = await info.context.db.users.create(email, password)
-        return CreateUser(UserObj(user.id, user.email))
+        return CreateUser(user)
 
 
 class Mutations(graphene.ObjectType):
