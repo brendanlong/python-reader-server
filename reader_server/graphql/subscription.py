@@ -1,5 +1,7 @@
 from typing import Iterable, Optional
 
+import aiohttp
+import feedparser
 import graphene
 from graphene import relay
 
@@ -66,8 +68,14 @@ class CreateSubscription(graphene.Mutation):
     ) -> "CreateSubscription":
         user = info.context.user
         assert user is not None
+        session = info.context.session
+        res = await session.get(url)
+        text = await res.text()
+        assert res.status == 200
+
+        data = feedparser.parse(text)
         db = info.context.db
-        feed = await db.feeds.upsert(url, None)
+        feed = await db.feeds.upsert(url, data.feed.title)
         subscription = await db.subscriptions.create(feed.id, user.id)
         return CreateSubscription(subscription)
 

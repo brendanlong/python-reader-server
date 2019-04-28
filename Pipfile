@@ -12,6 +12,8 @@ pytest = "*"
 [packages]
 graphene = "*"
 email-validator = "*"
+feedparser = "*"
+aiohttp = "*"
 
 [requires]
 python_version = "3.7"
