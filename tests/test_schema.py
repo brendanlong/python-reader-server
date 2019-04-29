@@ -1,8 +1,8 @@
 import graphene
 
-import reader_server.query
+from reader_server.graphql.query import Query
 
 
 def test_schema_loads() -> None:
-    schema = graphene.Schema(query=reader_server.query.Query)
+    schema = graphene.Schema(query=Query)
     assert schema is not None
