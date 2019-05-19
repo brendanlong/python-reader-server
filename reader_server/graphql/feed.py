@@ -7,7 +7,7 @@ from .context import ResolveInfo
 from reader_server.types import Feed
 
 
-class FeedObj(graphene.ObjectType):
+class FeedType(graphene.ObjectType):
     class Meta:
         name = "Feed"
         interfaces = (relay.Node,)
@@ -33,7 +33,7 @@ class FeedObj(graphene.ObjectType):
 
 class FeedConnection(relay.Connection):
     class Meta:
-        node = FeedObj
+        node = FeedType
 
 
 class Query(graphene.ObjectType):

@@ -8,7 +8,7 @@ from reader_server.types import User
 from .scalars import Email
 
 
-class UserObj(graphene.ObjectType):
+class UserType(graphene.ObjectType):
     class Meta:
         name = "User"
         interfaces = (relay.Node,)
@@ -30,13 +30,13 @@ class UserObj(graphene.ObjectType):
 
 class UserConnection(relay.Connection):
     class Meta:
-        node = UserObj
+        node = UserType
 
 
 class Query(graphene.ObjectType):
     users = relay.ConnectionField(UserConnection)
 
-    user: UserObj = graphene.Field(UserObj)
+    user: UserType = graphene.Field(UserType)
 
     async def resolve_user(self, info: ResolveInfo) -> Optional[User]:
         return info.context.user
@@ -57,7 +57,7 @@ class CreateUser(graphene.Mutation):
         email = graphene.NonNull(Email)
         password = graphene.NonNull(graphene.String)
 
-    user: UserObj = graphene.Field(UserObj, required=True)
+    user: UserType = graphene.Field(UserType, required=True)
 
     async def mutate(self, info: ResolveInfo, email: str,
                      password: str) -> "CreateUser":

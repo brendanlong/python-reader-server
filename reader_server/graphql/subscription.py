@@ -6,19 +6,19 @@ import graphene
 from graphene import relay
 
 from .context import ResolveInfo
-from .feed import FeedObj
-from .user import UserObj
+from .feed import FeedType
+from .user import UserType
 from reader_server.types import Subscription, User
 
 
-class SubscriptionObj(graphene.ObjectType):
+class SubscriptionType(graphene.ObjectType):
     class Meta:
         name = "Subscription"
         interfaces = (relay.Node,)
 
     id: str
-    feed: str = graphene.Field(FeedObj, required=True)
-    user: str = graphene.Field(UserObj, required=True)
+    feed: str = graphene.Field(FeedType, required=True)
+    user: str = graphene.Field(UserType, required=True)
 
     @classmethod
     async def get_node(cls, info: ResolveInfo, id: str) -> User:
@@ -37,7 +37,7 @@ class SubscriptionObj(graphene.ObjectType):
 
 class SubscriptionConnection(relay.Connection):
     class Meta:
-        node = SubscriptionObj
+        node = SubscriptionType
 
 
 class Query(graphene.ObjectType):
@@ -58,8 +58,8 @@ class CreateSubscription(graphene.Mutation):
     class Arguments:
         url = graphene.NonNull(graphene.String)
 
-    subscription: SubscriptionObj = graphene.Field(
-        SubscriptionObj, required=True)
+    subscription: SubscriptionType = graphene.Field(
+        SubscriptionType, required=True)
 
     async def mutate(
         self,

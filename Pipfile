@@ -8,6 +8,7 @@ flake8 = "*"
 autopep8 = "*"
 mypy = "*"
 pytest = "*"
+rope = "*"
 
 [packages]
 graphene = "*"
